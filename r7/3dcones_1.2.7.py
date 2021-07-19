@@ -310,6 +310,12 @@ def scale_clicked(req, widget, action):
 			dz = scale_value_z + dz
 			set_model_scale([model], dx, dy, dz)
 
+	if widget == "prop_scale_x_txt" or "prop_scale_y_txt" or "prop_scale_z_txt":
+		load_save_gui_settings(req, "save")
+		
+
+	load_save_gui_settings(req, "save")
+
 def rotation_clicked(req, widget, action):
 	pg = tde4.getCurrentPGroup()
 	rotate_x_value = float(tde4.getWidgetValue(req, "rot_x_txt_value"))
@@ -328,6 +334,8 @@ def rotation_clicked(req, widget, action):
 		scale_matrix = mat3d(s0,0.0,0.0,0.0,s1,0.0,0.0,0.0,s2)				
 		final_matrix = rotation_matrix * scale_matrix
 		tde4.set3DModelRotationScale3D(pg, model, final_matrix.list())
+
+	load_save_gui_settings(req, "save")
 
 def set_color_slider_value(r, g, b):
 	tde4.setWidgetValue(req, "color_red_slider", str(r))
@@ -426,6 +434,8 @@ def color_slider_clicked(req, widget, action):
 	for model in model_list:
 		tde4.set3DModelColor(pg, model, red, green, blue, alpha)
 
+	load_save_gui_settings(req, "save")
+
 def rendering_menu_clicked(req, widget, action):
 	pg = tde4.getCurrentPGroup()
 	show_lines_value = tde4.getWidgetValue(req, "show_lines_rdo_box")
@@ -443,7 +453,9 @@ def rendering_menu_clicked(req, widget, action):
 				if show_polygons_value == 1:
 					tde4.set3DModelRenderingFlags(pg, model, render_flag[0] , render_flag[1], 1)
 				else:
-					tde4.set3DModelRenderingFlags(pg, model, render_flag[0], render_flag[1], 0)	
+					tde4.set3DModelRenderingFlags(pg, model, render_flag[0], render_flag[1], 0)
+
+		load_save_gui_settings(req, "save")	
 
 def model_shape_menu_clicked(req, widget, action):
 	pg = tde4.getCurrentPGroup()
@@ -479,6 +491,42 @@ def model_shape_menu_clicked(req, widget, action):
 
 def close_btn_clicked(req, widget, action):
 	tde4.unpostCustomRequester(req)
+
+load_save_widgets = ["show_lines_rdo_box", "show_polygons_rdo_box", 
+                     "scale_slider", "scale_text_value", "prop_scale_rdo_box",
+                     "prop_scale_x_txt", "prop_scale_y_txt", "prop_scale_z_txt",
+                     "color_red_slider", "color_green_slider", "color_blue_slider", "color_alpha_slider",
+                     "scale_x_txt_value", "scale_y_txt_value", "scale_z_txt_value",
+                     "rot_x_txt_value", "rot_y_txt_value", "rot_z_txt_value"]
+
+def load_save_gui_settings(req, operation):
+	pg	= tde4.getCurrentPGroup()
+	cam	= tde4.getCurrentCamera()
+	tag	= "PATCHA-3D-CONES-GUI-SETTINGS-%d-%d"%(tde4.getCameraPersistentID(cam),tde4.getPGroupPersistentID(pg))	
+	string = ""
+	if operation == "save":
+		for widget in load_save_widgets:
+			value = tde4.getWidgetValue(req, widget)
+			string = string + " " + str(value)
+		tde4.addPersistentString(tag, string)
+
+	if operation == "load":
+		string	= tde4.getPersistentString(tag)
+		if string!=None:
+			string = string.split()
+			for i in range(len(string)):
+				tde4.setWidgetValue(req, load_save_widgets[i], string[i])
+			prop_scale_rdo_toggle()
+	return
+
+def reset_ui_settings_clicked(req, widget, action):
+	pass
+
+
+
+
+
+
 
 req = tde4.createCustomRequester()
 tde4.addMenuBarWidget(req,"menu_bar")
@@ -603,6 +651,14 @@ tde4.addMenuButtonWidget(req,"locator_menu_btn","Locator","model_shape_menu")
 tde4.setWidgetOffsets(req,"locator_menu_btn",0,0,0,0)
 tde4.setWidgetAttachModes(req,"locator_menu_btn","ATTACH_WINDOW","ATTACH_NONE","ATTACH_WINDOW","ATTACH_NONE")
 tde4.setWidgetSize(req,"locator_menu_btn",80,20)
+tde4.addMenuWidget(req,"reset_menu","Reset","menu_bar",0)
+tde4.setWidgetOffsets(req,"reset_menu",0,0,0,0)
+tde4.setWidgetAttachModes(req,"reset_menu","ATTACH_WINDOW","ATTACH_NONE","ATTACH_WINDOW","ATTACH_NONE")
+tde4.setWidgetSize(req,"reset_menu",80,20)
+tde4.addMenuButtonWidget(req,"reset_ui_menu_btn","Reset UI settings","reset_menu")
+tde4.setWidgetOffsets(req,"reset_ui_menu_btn",0,0,0,0)
+tde4.setWidgetAttachModes(req,"reset_ui_menu_btn","ATTACH_WINDOW","ATTACH_NONE","ATTACH_WINDOW","ATTACH_NONE")
+tde4.setWidgetSize(req,"reset_ui_menu_btn",80,20)
 tde4.addScaleWidget(req,"scale_slider","Uniform scale","DOUBLE",0.001,10.0,1.0)
 tde4.setWidgetOffsets(req,"scale_slider",17,83,35,0)
 tde4.setWidgetAttachModes(req,"scale_slider","ATTACH_POSITION","ATTACH_POSITION","ATTACH_WINDOW","ATTACH_NONE")
@@ -747,10 +803,18 @@ tde4.setWidgetLinks(req,"delete_extra_models_btn","","","rot_y_txt_value","")
 tde4.setWidgetLinks(req,"delete_all_btn","","","rot_y_txt_value","")
 tde4.setWidgetLinks(req,"close_btn","","","rot_y_txt_value","")
 
+
+
+load_save_gui_settings(req, "load")
+load_save_gui_settings(req, "save")
+
 # Callbacks
 tde4.setWidgetCallbackFunction(req, "scale_slider", "scale_clicked")
 tde4.setWidgetCallbackFunction(req, "scale_text_value", "scale_clicked")
 tde4.setWidgetCallbackFunction(req, "prop_scale_rdo_box", "scale_clicked")
+tde4.setWidgetCallbackFunction(req, "prop_scale_x_txt", "scale_clicked")
+tde4.setWidgetCallbackFunction(req, "prop_scale_y_txt", "scale_clicked")
+tde4.setWidgetCallbackFunction(req, "prop_scale_z_txt", "scale_clicked")
 tde4.setWidgetCallbackFunction(req, "scale_positive_btn", "scale_clicked")
 tde4.setWidgetCallbackFunction(req, "scale_negative_btn", "scale_clicked")
 tde4.setWidgetCallbackFunction(req, "scale_x_txt_value", "scale_clicked")
