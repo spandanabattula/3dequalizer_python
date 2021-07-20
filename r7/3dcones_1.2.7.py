@@ -517,6 +517,7 @@ def reset_ui_settings_clicked(req, widget, action):
 	for i in range(len(load_save_widgets)):
 		tde4.setWidgetValue(req, load_save_widgets[i][0], str(load_save_widgets[i][1]))
 	prop_scale_rdo_toggle()
+	load_save_gui_settings(req, "save")
 
 # GUI
 req = tde4.createCustomRequester()
