@@ -3,10 +3,9 @@
 # 3DE4.script.gui.button:	Lineup Controls::Lamb on/off, align-bottom-left, 80, 20
 # 3DE4.script.gui.button:	Orientation Controls::Lamb on/off, align-bottom-left, 70, 20
 # 3DE4.script.comment:toggles lambertizer on/off.
+
+# July 20 2021, Montreal
 # Patcha Saheb(patchasaheb@gmail.com)
-
-
-from vl_sdv import *
 
 pg = tde4.getCurrentPGroup()
 cam = tde4.getCurrentCamera()
@@ -20,10 +19,9 @@ if len(mlist) > 0:
 			tde4.set3DModelRenderingFlags(pg,model,0,1,0)
 		else:
 			tde4.set3DModelPerVertexColorsFlag(pg,model,1)
-			tde4.set3DModelRenderingFlags(pg,model,0,0,1)
-       
+			tde4.set3DModelRenderingFlags(pg,model,0,0,1)       
 else:
-	tde4.postQuestionRequester("Patcha Lamb on/off","Error, atleast one 3DModel must be selected.","Ok")
+	tde4.postQuestionRequester("Lamb on/off","Error, atleast one 3DModel must be selected.","Ok")
 
 
 
