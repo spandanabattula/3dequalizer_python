@@ -6,7 +6,7 @@
 # 3DE4.script.comment: Create 3D cones on selected 3D points.
 
 # updated for python3/R7
-# July 17 2021, Montreal
+# July 19 2021, Montreal
 # Patcha Saheb(patchasaheb@gmail.com)
 
 
@@ -492,12 +492,12 @@ def model_shape_menu_clicked(req, widget, action):
 def close_btn_clicked(req, widget, action):
 	tde4.unpostCustomRequester(req)
 
-load_save_widgets = ["show_lines_rdo_box", "show_polygons_rdo_box", 
-                     "scale_slider", "scale_text_value", "prop_scale_rdo_box",
-                     "prop_scale_x_txt", "prop_scale_y_txt", "prop_scale_z_txt",
-                     "color_red_slider", "color_green_slider", "color_blue_slider", "color_alpha_slider",
-                     "scale_x_txt_value", "scale_y_txt_value", "scale_z_txt_value",
-                     "rot_x_txt_value", "rot_y_txt_value", "rot_z_txt_value"]
+load_save_widgets = [("show_lines_rdo_box",1), ("show_polygons_rdo_box",1), 
+                     ("scale_slider",1.0), ("scale_text_value",1.0), ("prop_scale_rdo_box",0),
+                     ("prop_scale_x_txt",10), ("prop_scale_y_txt",10), ("prop_scale_z_txt",10),
+                     ("color_red_slider",1.0), ("color_green_slider",0.0), ("color_blue_slider",0.0), ("color_alpha_slider",1.0),
+                     ("scale_x_txt_value",1.0), ("scale_y_txt_value",1.0), ("scale_z_txt_value",1.0),
+                     ("rot_x_txt_value",0.0), ("rot_y_txt_value",0.0), ("rot_z_txt_value",0.0)]
 
 def load_save_gui_settings(req, operation):
 	pg	= tde4.getCurrentPGroup()
@@ -505,8 +505,8 @@ def load_save_gui_settings(req, operation):
 	tag	= "PATCHA-3D-CONES-GUI-SETTINGS-%d-%d"%(tde4.getCameraPersistentID(cam),tde4.getPGroupPersistentID(pg))	
 	string = ""
 	if operation == "save":
-		for widget in load_save_widgets:
-			value = tde4.getWidgetValue(req, widget)
+		for i in range(len(load_save_widgets)):
+			value = tde4.getWidgetValue(req, load_save_widgets[i][0])
 			string = string + " " + str(value)
 		tde4.addPersistentString(tag, string)
 
@@ -515,19 +515,16 @@ def load_save_gui_settings(req, operation):
 		if string!=None:
 			string = string.split()
 			for i in range(len(string)):
-				tde4.setWidgetValue(req, load_save_widgets[i], string[i])
+				tde4.setWidgetValue(req, load_save_widgets[i][0], string[i])
 			prop_scale_rdo_toggle()
 	return
 
 def reset_ui_settings_clicked(req, widget, action):
-	pass
+	for i in range(len(load_save_widgets)):
+		tde4.setWidgetValue(req, load_save_widgets[i][0], str(load_save_widgets[i][1]))
+	prop_scale_rdo_toggle()
 
-
-
-
-
-
-
+# GUI
 req = tde4.createCustomRequester()
 tde4.addMenuBarWidget(req,"menu_bar")
 tde4.setWidgetOffsets(req,"menu_bar",0,0,0,0)
@@ -803,8 +800,6 @@ tde4.setWidgetLinks(req,"delete_extra_models_btn","","","rot_y_txt_value","")
 tde4.setWidgetLinks(req,"delete_all_btn","","","rot_y_txt_value","")
 tde4.setWidgetLinks(req,"close_btn","","","rot_y_txt_value","")
 
-
-
 load_save_gui_settings(req, "load")
 load_save_gui_settings(req, "save")
 
@@ -844,6 +839,8 @@ tde4.setWidgetCallbackFunction(req, "show_lines_rdo_box", "rendering_menu_clicke
 tde4.setWidgetCallbackFunction(req, "show_polygons_rdo_box", "rendering_menu_clicked")
 
 tde4.setWidgetCallbackFunction(req, "model_shape_menu", "model_shape_menu_clicked")
+
+tde4.setWidgetCallbackFunction(req, "reset_ui_menu_btn", "reset_ui_settings_clicked")
 
 tde4.setWidgetCallbackFunction(req, "create_btn", "create_models_clicked")
 tde4.setWidgetCallbackFunction(req, "delete_extra_models_btn", "delete_extra_models_clicked")
