@@ -259,7 +259,6 @@ def scale_clicked(req, widget, action):
 	prop_scale_z = float(tde4.getWidgetValue(req, "prop_scale_z_txt"))
 
 	models = get_all_model_list() or []
-
 	if widget == "scale_slider":
 		tde4.setWidgetValue(req, "scale_text_value", str(round(slider_value, 3)))
 
@@ -312,8 +311,6 @@ def scale_clicked(req, widget, action):
 
 	if widget == "prop_scale_x_txt" or "prop_scale_y_txt" or "prop_scale_z_txt":
 		load_save_gui_settings(req, "save")
-		
-
 	load_save_gui_settings(req, "save")
 
 def rotation_clicked(req, widget, action):
@@ -334,7 +331,6 @@ def rotation_clicked(req, widget, action):
 		scale_matrix = mat3d(s0,0.0,0.0,0.0,s1,0.0,0.0,0.0,s2)				
 		final_matrix = rotation_matrix * scale_matrix
 		tde4.set3DModelRotationScale3D(pg, model, final_matrix.list())
-
 	load_save_gui_settings(req, "save")
 
 def set_color_slider_value(r, g, b):
@@ -433,7 +429,6 @@ def color_slider_clicked(req, widget, action):
 	alpha = tde4.getWidgetValue(req, "color_alpha_slider")
 	for model in model_list:
 		tde4.set3DModelColor(pg, model, red, green, blue, alpha)
-
 	load_save_gui_settings(req, "save")
 
 def rendering_menu_clicked(req, widget, action):
@@ -454,7 +449,6 @@ def rendering_menu_clicked(req, widget, action):
 					tde4.set3DModelRenderingFlags(pg, model, render_flag[0] , render_flag[1], 1)
 				else:
 					tde4.set3DModelRenderingFlags(pg, model, render_flag[0], render_flag[1], 0)
-
 		load_save_gui_settings(req, "save")	
 
 def model_shape_menu_clicked(req, widget, action):
