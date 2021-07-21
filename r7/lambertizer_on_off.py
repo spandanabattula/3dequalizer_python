@@ -1,5 +1,5 @@
 # 3DE4.script.name: Lamb on/off
-# 3DE4.script.version: v1.0
+# 3DE4.script.version: v1.1
 # 3DE4.script.gui.button: Lineup Controls::Lamb on/off, align-bottom-left, 80, 20
 # 3DE4.script.gui.button: Orientation Controls::Lamb on/off, align-bottom-left, 70, 20
 # 3DE4.script.comment: toggles lambertizer on/off.
