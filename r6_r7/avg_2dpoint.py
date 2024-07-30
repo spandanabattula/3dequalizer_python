@@ -6,6 +6,7 @@
 #August 06 2015.
 
 # Spandana Test 1
+# Spandana Test 2
 
 
 window_title = "Avg 2DPoint v1.0"
